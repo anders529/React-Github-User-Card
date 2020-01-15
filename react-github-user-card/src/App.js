@@ -1,26 +1,40 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
+import UsrPge from './components/UserPage';
+import FollowPage from './components/FollowPage';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
+class App extends React.Component { 
+    state = {
+      aaron:[],
+      followersArray:[]
+    }
+  componentDidMount() {
+    const URL = 'https://api.github.com/users/anders529';
+    const FOLLOWERS = 'https://api.github.com/users/anders529/followers'
+    axios.get(`${URL}`)
+      .then(response => 
+        {
+        this.setState({
+          aaron: response.data
+        }) 
+        axios.get(`${FOLLOWERS}`)
+        .then(response => {
+          this.setState({
+            followersArray: response.data
+          })
+        })
+      })
+        .catch(error => {
+          console.log(error);
+        })
+    }
+  render() {
+    return  (
+     <>
+        <UsrPge data={this.state.aaron}/>
+        
+        <FollowPage data={this.state.followersArray}/>
+     </> 
+    );
+  }}
 export default App;
